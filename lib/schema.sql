@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS notes;
+DROP TABLE IF EXISTS Notes;
 
-CREATE TABLE notes (
+CREATE TABLE Notes (
   id SERIAL PRIMARY KEY,
   created_at timestamp not null default CURRENT_TIMESTAMP,
   updated_at timestamp not null default CURRENT_TIMESTAMP,
