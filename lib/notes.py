@@ -4,15 +4,12 @@ from peewee import *
 
 conn = psycopg2.connect(
     dbname='notes',
-    user='',
-    password='',
     host='localhost',
     port='5432'
 )
 
 DATABASE = PostgresqlDatabase(
     'notes',
-    password='',
     host='localhost',
     port='5432')
 
@@ -36,19 +33,19 @@ class Note(BaseModel):
 DATABASE.create_tables([Note])
 
 # function to add a note in the database
-def add_note(args):
+def add_note():
     title = input('Enter the note title: ')
     notes = input('Enter the note content: ')
     is_priority = input('Is this note a priority? (y/n): ').lower() == 'y'
     due_date = input('Enter the due date (YYYY-MM-DD) (optional): ')
-if due_date:
-    due_date = datetime.datetime.strptime(due_date, '%Y-%m-%d').date()
-    
-    try:
-        note = Note.create(title=title, notes=notes, is_priority=is_priority, due_date=due_date)
-        print(f'New note created titled {title}.')
-    except IntegrityError:
-        print(f'Note with title {title} already exists in the database.')
+    if due_date:
+        due_date = datetime.datetime.strptime(due_date, '%Y-%m-%d').date()
+        
+        try:
+            note = Note.create(title=title, notes=notes, is_priority=is_priority, due_date=due_date)
+            print(f'New note created titled {title}.')
+        except IntegrityError:
+            print(f'Note with title {title} already exists in the database.')
 
 # function to list the notes in the database and return them as a dictionary
 def get_notes():
@@ -64,12 +61,14 @@ def get_notes():
         return None
     
 # function to update a note in the database
-def update_note(args):
-    id = args.id
-    title = args.title
-    notes = args.notes
-    is_priority = args.is_priority
-    due_date = args.due_date
+def update_note():
+    id = input('Enter the ID of the note you want to edit: ')
+    title = input('Enter the updated title (press enter to keep current title): ')
+    notes = input('Enter the updated notes (press enter to keep current notes): ')
+    is_priority = input('Is this note a priority? (y/n): ').lower() == 'y'
+    due_date = input('Enter the due date (YYYY-MM-DD) (press enter to keep current due date): ')
+    if due_date:
+        due_date = datetime.datetime.strptime(due_date, '%Y-%m-%d').date()
     try:
         note = Note.get(Note.id == id)
         if title:
@@ -97,8 +96,8 @@ def list_notes():
 
 
 # function to search for a note in the database
-def search_notes(args):
-    query = args.query
+def search_notes():
+    query = input('Enter the search query: ')
     notes = Note.select().where(Note.notes.contains(query))
     if notes.count() > 0:
         print(f'{notes.count()} notes found:')
@@ -147,3 +146,5 @@ def main():
             print('Invalid choice. Please enter a number from 1 to 5.')
 
 
+if __name__ == '__main__':
+    main()
